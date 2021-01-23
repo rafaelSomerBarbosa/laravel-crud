@@ -1,0 +1,35 @@
+# For more information: https://laravel.com/docs/sail
+version: '3'
+services:
+    laravel:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        image: php:7.4-cli
+        ports:
+            - '80:8080'
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - laravel
+    mysql:
+      image: mysql
+      ports:
+        - '3306:3306'
+      command: --default-authentication-plugin=mysql_native_password
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: root
+      networks:
+            - laravel
+
+networks:
+    laravel:
+        driver: bridge
+# volumes:
+#     sailmysql:
+#         driver: local
+#    sailpostgresql:
+#        driver: local
+    # sailredis:
+    #     driver: local
