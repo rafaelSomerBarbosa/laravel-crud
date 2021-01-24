@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Categoria;
+use App\Models\Category;
 use Illuminate\Database\QueryException;
 
-class CategoriaController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +16,9 @@ class CategoriaController extends Controller
     public function index()
     {
         try {
-            return view('categorias', ['categorias' => Categoria::all()]);
+            return view('categorias.index', ['categories' => Category::paginate()]);
         } catch(QueryException $e) {
-            return view('categorias', ['error' => $e->message()]);
+            return view('categorias.index', ['error' => $e->getMessage()]);
         }
     }
 
@@ -62,7 +62,11 @@ class CategoriaController extends Controller
      */
     public function edit($id)
     {
-        //
+        try {
+            return view('categorias.edit', ['category' => Category::find($id)]);
+        } catch(QueryException $e) {
+            return view('categorias.edit', ['error' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -74,7 +78,13 @@ class CategoriaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validate = $request->validate([
+            'nome' => 'required|max:255',
+        ]);
+
+        Category::find($id)->update(['dsCategoria' => $validate['nome']]);
+        
+        return redirect()->route('categorias.index');
     }
 
     /**
@@ -85,6 +95,8 @@ class CategoriaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Category::destroy($id);
+
+        return redirect()->route('categorias.index');
     }
 }

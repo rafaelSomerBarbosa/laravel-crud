@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Categoria extends Model
+class Category extends Model
 {
     use HasFactory;
 
@@ -17,6 +17,10 @@ class Categoria extends Model
 
     protected $attributes = [
         'idCategoria',
+        'dsCategoria',
+    ];
+
+    protected $fillable = [
         'dsCategoria',
     ];
 }
