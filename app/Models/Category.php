@@ -12,13 +12,10 @@ class Category extends Model
     protected $table = 'Categoria';
     
     protected $primaryKey = 'idCategoria';
+
+    public $incrementing = false;
     
     public $timestamps = false;
-
-    protected $attributes = [
-        'idCategoria',
-        'dsCategoria',
-    ];
 
     protected $fillable = [
         'dsCategoria',

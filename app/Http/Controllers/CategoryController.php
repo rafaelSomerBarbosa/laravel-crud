@@ -16,7 +16,7 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            return view('categorias.index', ['categories' => Category::paginate()]);
+            return view('categorias.index', ['categories' => Category::orderBy('idCategoria', 'desc')->paginate()]);
         } catch(QueryException $e) {
             return view('categorias.index', ['error' => $e->getMessage()]);
         }
@@ -29,7 +29,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('categorias.create');
     }
 
     /**
@@ -40,18 +40,13 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $validate = $request->validate([
+            'nome' => 'required|max:255',
+        ]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        Category::create(['dsCategoria' => $validate['nome']]);
+
+        return redirect()->route('categorias.index');
     }
 
     /**
