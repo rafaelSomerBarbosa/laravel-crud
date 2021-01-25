@@ -3,6 +3,16 @@
 @section('title', 'Categorias')
 
 @section('content')
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div>
         <a href="{{ route('categorias.create') }}" class="btn btn-success btn-sm">
             <i class="bi bi-plus"></i>
