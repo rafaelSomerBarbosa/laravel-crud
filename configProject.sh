@@ -1,0 +1,1 @@
+docker exec -it laravel-container-crud php artisan migrate
