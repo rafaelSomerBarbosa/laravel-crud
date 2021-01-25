@@ -15,11 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        try {
-            return view('categorias.index', ['categories' => Category::orderBy('idCategoria', 'desc')->paginate()]);
-        } catch(QueryException $e) {
-            return view('categorias.index', ['error' => $e->getMessage()]);
-        }
+        return view('categorias.index', ['categories' => Category::orderBy('idCategoria', 'desc')->paginate()]);
     }
 
     /**
@@ -40,13 +36,17 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = $request->validate([
-            'nome' => 'required|max:255',
-        ]);
-
-        Category::create(['dsCategoria' => $validate['nome']]);
-
-        return redirect()->route('categorias.index');
+        try {
+            $validate = $request->validate([
+                'nome' => 'required|max:255|unique:Categoria,dsCategoria',
+            ]);
+    
+            Category::create(['dsCategoria' => $validate['nome']]);
+    
+            return redirect()->route('categorias.index');
+        } catch(QueryException $e) {
+            return redirect()->route('produtos.index')->withErrors($e->getMessage());
+        }
     }
 
     /**
@@ -73,13 +73,17 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validate = $request->validate([
-            'nome' => 'required|max:255',
-        ]);
-
-        Category::find($id)->update(['dsCategoria' => $validate['nome']]);
-        
-        return redirect()->route('categorias.index');
+        try {
+            $validate = $request->validate([
+                'nome' => 'required|max:255',
+            ]);
+    
+            Category::find($id)->update(['dsCategoria' => $validate['nome']]);
+            
+            return redirect()->route('categorias.index');
+        } catch(QueryException $e) {
+            return redirect()->route('produtos.index')->withErrors($e->getMessage());
+        }
     }
 
     /**
@@ -90,8 +94,16 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        Category::destroy($id);
+        try {
+            Category::destroy($id);
 
-        return redirect()->route('categorias.index');
+            return redirect()->route('categorias.index');
+        } catch(QueryException $e) {
+            if($e->getCode() == 23000) {
+                return redirect()->route('categorias.index')->withErrors('Não é possivel remover essa categoria pois ela já está vinculado a um produto.');
+            }
+
+            return redirect()->route('categorias.index')->withErrors($e->getMessage());
+        }
     }
 }
